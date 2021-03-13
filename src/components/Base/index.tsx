@@ -1,9 +1,33 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FinancialsContext } from '../../contexts/FinancialsContext'
 import { Card, Header, Main, Section } from './styles'
+import { formatCurrency } from '../../utils'
 
 export default function Base() {
-  const { toggleModal } = useContext(FinancialsContext)
+  const { toggleModal, transactions, removeTransaction } = useContext(
+    FinancialsContext
+  )
+
+  const [income, setIncome] = useState(0)
+  const [expense, setExpense] = useState(0)
+  const [total, setTotal] = useState(0)
+
+  useEffect(() => {
+    let income = 0
+    let expense = 0
+    transactions.forEach(transaction => {
+      if (transaction.amount > 0) {
+        income += transaction.amount
+      }
+
+      if (transaction.amount < 0) {
+        expense += transaction.amount
+      }
+    })
+    setIncome(income)
+    setExpense(expense)
+    setTotal(income + expense)
+  }, [transactions])
 
   return (
     <>
@@ -18,21 +42,21 @@ export default function Base() {
               <span>Entradas</span>
               <img src="/assets/income.svg" alt="Imagem de entradas" />
             </h3>
-            <p>R$ 5000,00</p>
+            <p>{formatCurrency(income)}</p>
           </Card>
           <Card>
             <h3>
               <span>Saídas</span>
               <img src="/assets/expense.svg" alt="Imagem de saídas" />
             </h3>
-            <p>R$ 2000,00</p>
+            <p>{formatCurrency(expense)}</p>
           </Card>
           <Card className="total">
             <h3>
               <span>Total</span>
               <img src="/assets/total.svg" alt="Imagem de total" />
             </h3>
-            <p>R$ 3000,00</p>
+            <p>{formatCurrency(total)}</p>
           </Card>
         </Section>
         <Section id="transaction">
@@ -52,30 +76,24 @@ export default function Base() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="description">Luz</td>
-                <td className="expense">- R$ 500,00</td>
-                <td className="date">23/01/2021</td>
-                <td>
-                  <img src="/assets/minus.svg" alt="Remover Transação" />
-                </td>
-              </tr>
-              <tr>
-                <td className="description">Luz</td>
-                <td className="income">- R$ 500,00</td>
-                <td className="date">23/01/2021</td>
-                <td>
-                  <img src="/assets/minus.svg" alt="Remover Transação" />
-                </td>
-              </tr>
-              <tr>
-                <td className="description">Luz</td>
-                <td className="expense">- R$ 500,00</td>
-                <td className="date">23/01/2021</td>
-                <td>
-                  <img src="/assets/minus.svg" alt="Remover Transação" />
-                </td>
-              </tr>
+              {transactions.map(({ amount, date, description, id }, index) => {
+                return (
+                  <tr key={id}>
+                    <td className="description">{description}</td>
+                    <td className={amount < 0 ? 'expense' : 'income'}>
+                      {formatCurrency(amount)}
+                    </td>
+                    <td className="date">{date}</td>
+                    <td>
+                      <img
+                        onClick={() => removeTransaction(index)}
+                        src="/assets/minus.svg"
+                        alt="Remover Transação"
+                      />
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </Section>

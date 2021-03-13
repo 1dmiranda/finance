@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Form as Unform } from '@unform/web'
 
 export const Overlay = styled.div`
   width: 100%;
@@ -18,7 +19,7 @@ export const Overlay = styled.div`
   }
 `
 
-export const Form = styled.form`
+export const Form = styled(Unform)`
   h2 {
     margin-top: 0;
   }

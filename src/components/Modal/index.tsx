@@ -1,38 +1,49 @@
 import React, { useContext } from 'react'
-import { FinancialsContext } from '../../contexts/FinancialsContext'
+import {
+  FinancialsContext,
+  ITransaction
+} from '../../contexts/FinancialsContext'
+import Input from '../Input'
 
 import { Overlay, Form } from './styles'
 
 export default function Modal() {
-  const { toggleModal } = useContext(FinancialsContext)
+  const { toggleModal, newTransaction } = useContext(FinancialsContext)
+
+  function submitTransaction(data: ITransaction, { reset }) {
+    newTransaction(data)
+    reset()
+  }
 
   return (
     <Overlay className="modal-overlay">
       <div className="modal">
         <div className="form">
           <h2>Nova Transação</h2>
-          <Form action="">
+          <Form onSubmit={submitTransaction}>
             <div className="input-group">
               <label htmlFor="description" className="sr-only">
                 Descrição
               </label>
-              <input
+              <Input
                 type="text"
                 id="description"
                 name="description"
                 placeholder="Descrição"
+                required
               />
             </div>
             <div className="input-group">
               <label htmlFor="amount" className="sr-only">
                 Valor
               </label>
-              <input
+              <Input
                 type="number"
                 step="0.01"
                 id="amount"
                 name="amount"
                 placeholder="0,00"
+                required
               />
               <small>
                 Use o sinal - (negativo) para despesas e , (virgula) para casas
@@ -43,7 +54,7 @@ export default function Modal() {
               <label htmlFor="date" className="sr-only">
                 Data
               </label>
-              <input type="date" id="date" name="date" />
+              <Input type="date" id="date" name="date" required />
             </div>
 
             <div className="input-group actions">
