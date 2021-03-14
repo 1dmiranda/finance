@@ -38,8 +38,7 @@ export default function Modal() {
                 Valor
               </label>
               <Input
-                type="number"
-                step="0.01"
+                type="text"
                 id="amount"
                 name="amount"
                 placeholder="0,00"
