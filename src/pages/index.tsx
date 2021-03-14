@@ -24,7 +24,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 
   return {
     props: {
-      transactions: JSON.parse(transactions)
+      transactions: JSON.parse(transactions ?? '[]')
     }
   }
 }
