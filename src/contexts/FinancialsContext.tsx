@@ -1,5 +1,6 @@
 import React, { createContext, ReactNode, useState } from 'react'
 import Modal from '../components/Modal'
+import usePersistedState from '../hooks/usePersistedState'
 import { formatAmount, formatDate } from '../utils'
 
 interface IFinancialsContext {
@@ -11,6 +12,7 @@ interface IFinancialsContext {
 
 interface IFinancialsProvider {
   children: ReactNode
+  trs: ITransaction[]
 }
 
 export interface ITransaction {
@@ -22,29 +24,12 @@ export interface ITransaction {
 
 export const FinancialsContext = createContext({} as IFinancialsContext)
 
-export function FinancialsProvider({ children }: IFinancialsProvider) {
-  const trans = [
-    {
-      id: 1,
-      description: 'Luz',
-      amount: -50000,
-      date: '23/01/2021'
-    },
-    {
-      id: 2,
-      description: 'Internet',
-      amount: -20000,
-      date: '23/01/2021'
-    },
-    {
-      id: 3,
-      description: 'Salário',
-      amount: 500000,
-      date: '25/01/2021'
-    }
-  ]
+export function FinancialsProvider({ children, trs }: IFinancialsProvider) {
   const [modalOpen, setModalOpen] = useState(false)
-  const [transactions, setTransactions] = useState<ITransaction[]>(trans)
+  const [transactions, setTransactions] = usePersistedState<ITransaction[]>(
+    'transactions',
+    trs
+  )
 
   function toggleModal() {
     setModalOpen(!modalOpen)
